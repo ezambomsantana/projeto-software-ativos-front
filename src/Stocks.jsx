@@ -23,6 +23,8 @@ export default function StocksApp() {
     getAccessTokenSilently
   } = useAuth0();
 
+
+
   useEffect(() => {
     const fetchToken = async () => {
       try {
@@ -43,6 +45,7 @@ export default function StocksApp() {
   if (!isAuthenticated) {
     return <LoginButton />;
   }
+
 
   async function fetchStocks() {
     setLoading(true);
