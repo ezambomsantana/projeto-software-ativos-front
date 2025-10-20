@@ -3,7 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import LoginButton from "./components/LoginButton";
 import LogoutButton from "./components/LogoutButton";
 
-const BASE_URL = "/api";
+const BASE_URL = "http://localhost:8080";
 
 
 export default function StocksApp() {
@@ -11,6 +11,7 @@ export default function StocksApp() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [token, setToken] = useState(null);
+  const [roles, setRoles] = useState([])
 
   const [ticker, setTicker] = useState("");
   const [name, setName] = useState("");
@@ -31,6 +32,12 @@ export default function StocksApp() {
         const accessToken = await getAccessTokenSilently();
         console.log(accessToken)
         setToken(accessToken);
+
+        if (accessToken) {
+
+          const payload = JSON.parse(atob(accessToken.split('.')[1]));
+          setRoles(payload['https://stocks-insper.com/roles']);
+        }
       } catch (e) {
         console.error('Erro ao buscar token:', e);
       }
@@ -116,7 +123,7 @@ export default function StocksApp() {
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow p-6">
         <h1 className="text-2xl font-bold mb-4">Stocks — criação e listagem</h1>
 
-        <form onSubmit={handleCreate} className="space-y-3 mb-6">
+        {  <form onSubmit={handleCreate} className="space-y-3 mb-6">
           <div className="grid grid-cols-2 gap-3">
             <input value={ticker} onChange={e => setTicker(e.target.value)} placeholder="Ticker" className="p-2 border rounded" />
           </div>
@@ -136,6 +143,8 @@ export default function StocksApp() {
             <button type="button" onClick={fetchStocks} className="px-4 py-2 bg-gray-200 rounded">Recarregar</button>
           </div>
         </form>
+
+        }
 
         {error && <div className="mb-4 text-red-600">{error}</div>}
 
